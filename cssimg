@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+
+#######################################################################
+#This program is free software: you can redistribute it and/or modify #
+#it under the terms of the GNU General Public License as published by #
+#the Free Software Foundation, either version 3 of the License, or    #
+#(at your option) any later version.                                  #
+#                                                                     #
+#This program is distributed in the hope that it will be useful,      #
+#but WITHOUT ANY WARRANTY; without even the implied warranty of       #
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        #
+#GNU General Public License for more details.                         #
+#                                                                     #
+#You should have received a copy of the GNU General Public License    #
+#along with this program.  If not, see <http://www.gnu.org/licenses/>.#
+#######################################################################
+
+import sys, os
+from PIL import Image
+
+#List of file formats supported
+formats=['jpg', 'jpeg', 'png']
+
+if len(sys.argv) == 2:
+    #Check if format is supported
+    if sys.argv[1].lower().split('.')[-1] in formats:
+        
+        #Open image
+        im=Image.open(sys.argv[1])
+        pix=im.load()
+
+        w=str(im.size[0])
+        h=str(im.size[1])
+
+        #Create CSS file
+        fileName=sys.argv[1].split('.')[0]
+        cssFile=open(fileName+'.css', 'wb')
+        
+        #Writes basic CSS needed for the file
+        cssFile.write(bytes(fileName+'{width:'+w+'px;height:'+h+'px;}\n'+
+                       '#'+fileName+':after{content:\'\';display:block;'+
+                       'width:1px;height:1px;background:transparent;'+
+                       'box-shadow:', 'UTF-8'))
+
+        
+        i=0 #Set iterator to 0
+        j=0 #Set other iterator to 0
+        while i<im.size[0]: #Width loop
+            while j<im.size[1]: #Height loop
+                cssFile.write(bytes(str(i+1) +'px '+str(j+1)+'px rgb('+str(pix[i,j][0])+','+str(pix[i,j][1])+','+str(pix[i,j][2])+'),', 'UTF-8'))
+                j+=1
+            i+=1
+            j=0
+
+        #Remove final comma from file, write final characters, and close
+        cssFile.seek(-1, os.SEEK_END)
+        cssFile.truncate()
+        cssFile.write(bytes(';}', 'UTF-8'))
+        cssFile.close()
+    else:
+        print("The file you are trying to convert isn't currently supported. The supported filetypes are: jpg, jpeg, and png. Please run this program with a compatible image")
+else:
+    print("Please run this program with a filename")
