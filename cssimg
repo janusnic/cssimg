@@ -46,15 +46,10 @@ if len(sys.argv) == 2:
                                        'box-shadow:', 'UTF-8'))
 
         
-        i = 0  # Set iterator to 0
-        j = 0  # Set other iterator to 0
-        while i < im.size[0]:  # Width loop
-            while j < im.size[1]:  # Height loop
+        for i in range(im.size[0]):  # Width loop
+            for j in range(im.size[1]):  # Height loop
                 cssFile.write(bytes(str(i+1) + 'px ' +str(j + 1) + 'px rgb(' + str(pix[i, j][0]) + ',' + str(pix[i, j][1]) + ','+
                                     str(pix[i, j][2]) + '),', 'UTF-8'))
-                j += 1
-            i += 1
-            j = 0
 
         # Remove final comma from file, write final characters, and close
         cssFile.seek(-1, os.SEEK_END)
