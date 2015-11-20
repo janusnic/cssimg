@@ -24,7 +24,7 @@ formats = ['jpg', 'jpeg', 'png']
 
 if len(sys.argv) == 2:
     # Check if format is supported
-    if sys.argv[1].lower().split('.')[-1] in formats:
+    if os.path.splitext(sys.argv[1])[-1] in formats:
 
         # Open image
         im = Image.open(sys.argv[1])
